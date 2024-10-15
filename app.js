@@ -1,10 +1,21 @@
+require('dotenv').config(); // Для загрузки переменных окружения из файла .env
 const express = require('express');
 const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
 const { v4: uuidv4 } = require('uuid'); // Подключаем uuid для генерации id
+const { S3Client, PutObjectCommand, DeleteObjectCommand } = require('@aws-sdk/client-s3'); // AWS SDK для работы с S3
 const app = express();
-const upload = multer({ dest: 'public/uploads/' }); // Папка для загрузки фотографий
+const upload = multer({ dest: 'uploads/' }); // Временная папка для загрузки файлов перед отправкой в S3
+
+// Настройка клиента S3
+const s3 = new S3Client({
+  region: 'eu-north-1', // Регион вашего бакета
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID, // Ваш Access Key ID
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY // Ваш Secret Access Key
+  }
+});
 
 let recipes = require('./recipes.json'); // Загрузка данных рецептов из JSON
 
@@ -45,6 +56,26 @@ function cleanUploads() {
 // Очищаем папку uploads при запуске приложения
 cleanUploads();
 
+// Функция для загрузки файла в S3
+async function uploadFileToS3(file) {
+  const fileStream = fs.createReadStream(file.path);
+
+  const uploadParams = {
+    Bucket: process.env.S3_BUCKET_NAME,
+    Key: file.filename, // Имя файла в S3
+    Body: fileStream,
+    ContentType: file.mimetype
+  };
+
+  try {
+    const data = await s3.send(new PutObjectCommand(uploadParams));
+    return `https://${process.env.S3_BUCKET_NAME}.s3.amazonaws.com/${file.filename}`; // Возвращаем URL загруженного файла
+  } catch (err) {
+    console.error('Ошибка загрузки файла в S3:', err);
+    throw err;
+  }
+}
+
 // Главная страница
 app.get('/', (req, res) => {
   const fishDishes = recipes.filter(recipe => recipe.category === 'fish');
@@ -68,7 +99,7 @@ app.get('/add-recipe', (req, res) => {
 });
 
 // Обработка добавления нового рецепта
-app.post('/add-recipe', upload.single('photo'), (req, res) => {
+app.post('/add-recipe', upload.single('photo'), async (req, res) => {
   const newRecipe = {
     id: uuidv4(), // Генерация уникального id
     title: req.body.title,
@@ -77,8 +108,19 @@ app.post('/add-recipe', upload.single('photo'), (req, res) => {
     ingredientWeights: req.body.ingredientWeights,
     totalWeight: req.body.totalWeight,
     preparation: req.body.description,
-    photo: req.file ? req.file.filename : null
+    photo: null
   };
+
+  if (req.file) {
+    try {
+      const photoUrl = await uploadFileToS3(req.file);
+      newRecipe.photo = photoUrl;
+      fs.unlinkSync(req.file.path); // Удаляем локальный файл после загрузки
+    } catch (error) {
+      console.error('Ошибка загрузки в S3:', error);
+      return res.status(500).send('Ошибка загрузки файла.');
+    }
+  }
 
   recipes.push(newRecipe); // Добавляем новый рецепт в массив
 
@@ -91,7 +133,7 @@ app.post('/add-recipe', upload.single('photo'), (req, res) => {
 });
 
 // Маршрут для удаления рецепта
-app.post('/delete-recipe/:id', (req, res) => {
+app.post('/delete-recipe/:id', async (req, res) => {
   const recipeId = req.params.id;
   const recipeIndex = recipes.findIndex(recipe => recipe.id === recipeId);
 
@@ -104,22 +146,17 @@ app.post('/delete-recipe/:id', (req, res) => {
 
   // Проверка, существует ли фото
   if (recipe.photo) {
-    const photoPath = path.join(__dirname, 'public', 'uploads', recipe.photo);
+    const photoKey = recipe.photo.split('/').pop();
 
-    // Проверяем наличие файла перед удалением
-    fs.access(photoPath, fs.constants.F_OK, (err) => {
-      if (!err) {
-        fs.unlink(photoPath, (err) => {
-          if (err) {
-            console.error(`Ошибка при удалении фото: ${err}`);
-          } else {
-            console.log(`Фото ${recipe.photo} успешно удалено.`);
-          }
-        });
-      } else {
-        console.log(`Фото ${recipe.photo} уже не существует.`);
-      }
-    });
+    try {
+      await s3.send(new DeleteObjectCommand({
+        Bucket: process.env.S3_BUCKET_NAME,
+        Key: photoKey
+      }));
+      console.log('Фото успешно удалено из S3:', photoKey);
+    } catch (err) {
+      console.error('Ошибка удаления файла из S3:', err);
+    }
   }
 
   // Удаляем рецепт из массива
@@ -131,8 +168,6 @@ app.post('/delete-recipe/:id', (req, res) => {
   // Отправляем ответ без редиректа
   res.json({ success: true });
 });
-
-
 
 // Маршрут для редактирования рецепта
 app.get('/edit-recipe/:id', (req, res) => {
@@ -152,7 +187,7 @@ app.get('/edit-recipe/:id', (req, res) => {
 });
 
 // Обработка редактирования рецепта
-app.post('/edit-recipe/:id', upload.single('photo'), (req, res) => {
+app.post('/edit-recipe/:id', upload.single('photo'), async (req, res) => {
   const recipeId = req.params.id;
   const recipeIndex = recipes.findIndex(recipe => recipe.id === recipeId);
 
@@ -167,9 +202,20 @@ app.post('/edit-recipe/:id', upload.single('photo'), (req, res) => {
     ingredients: req.body.ingredients, // Массив ингредиентов
     ingredientWeights: req.body.ingredientWeights, // Массив весов ингредиентов
     totalWeight: req.body.totalWeight, // Общий вес
-    preparation: req.body.description, // Описание приготовления
+    preparation: req.body.description,
     photo: req.file ? req.file.filename : recipes[recipeIndex].photo // Обновляем фото, если загружено новое
   };
+
+  if (req.file) {
+    try {
+      const photoUrl = await uploadFileToS3(req.file);
+      updatedRecipe.photo = photoUrl;
+      fs.unlinkSync(req.file.path); // Удаляем локальный файл после загрузки
+    } catch (error) {
+      console.error('Ошибка загрузки в S3:', error);
+      return res.status(500).send('Ошибка загрузки файла.');
+    }
+  }
 
   // Обновляем рецепт в массиве
   recipes[recipeIndex] = updatedRecipe;
@@ -203,6 +249,8 @@ app.get('/recipe/:id', (req, res) => {
 app.listen(3000, () => {
   console.log('Сервер запущен на http://localhost:3000');
 });
+
+
 
 
 
