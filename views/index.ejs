@@ -1,0 +1,37 @@
+<h1 class="section-header">
+  <span class="section-title">Категории рецептов</span>
+</h1>
+
+<div class="category-section">
+  <h2 class="section-header">
+    <span class="section-title">Рыбные блюда</span>
+  </h2>
+  <div class="recipes-container scroll-horizontal">
+    <% fishDishes.forEach((recipe) => { %>
+      <div class="card">
+        <a href="/recipe/<%= recipe.id %>" class="recipe-link">
+          <div class="recipe-photo-container">
+            <% if (recipe.photo) { %>
+              <img src="/uploads/<%= recipe.photo %>" alt="<%= recipe.title %>" class="recipe-photo">
+            <% } else { %>
+              <img src="/images/default-recipe.jpg" alt="Нет фото" class="recipe-photo"> <!-- Стандартное изображение -->
+            <% } %>
+          </div>
+          <div class="card-content">
+            <h3 class="card-title"><%= recipe.title %></h3>
+          </div>
+        </a>
+      </div>
+    <% }); %>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+

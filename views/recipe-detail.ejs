@@ -1,0 +1,44 @@
+<div class="recipe-detail">
+  <h1><%= recipe.title %></h1>
+
+  <% if (recipe.photo) { %>
+    <img src="/uploads/<%= recipe.photo %>" alt="<%= recipe.title %>" class="recipe-photo">
+  <% } else { %>
+    <p>Фото отсутствует.</p>
+  <% } %>
+
+  <h2 id="ingredients">Ингредиенты</h2>
+  <ul>
+    <% if (recipe.ingredients && recipe.ingredients.length > 0 && recipe.ingredientWeights && recipe.ingredientWeights.length > 0) { %>
+      <% for (let i = 0; i < recipe.ingredients.length; i++) { %>
+        <li id="ingredient-<%= i %>"><%= recipe.ingredients[i] %> — <%= recipe.ingredientWeights[i] %> г</li>
+      <% } %>
+    <% } else { %>
+      <li>Ингредиенты не указаны</li>
+    <% } %>
+  </ul>
+
+  <h2 id="preparation">Общий вес: <%= recipe.totalWeight || 'Общий вес не указан' %> г</h2>
+
+  <h2>Описание приготовления</h2>
+  <p id="preparation-<%= recipe.id %>"><%= recipe.preparation || 'Описание приготовления не указано' %></p>
+
+  <!-- Кнопки редактирования и удаления -->
+  <div class="recipe-actions">
+    <a href="/edit-recipe/<%= recipe.id %>" class="btn-edit" id="edit-recipe-<%= recipe.id %>">Редактировать</a>
+    <form action="/delete-recipe/<%= recipe.id %>" method="POST" class="delete-form" data-id="<%= recipe.id %>">
+      <button type="submit" class="btn-delete" id="delete-recipe-<%= recipe.id %>">Удалить</button>
+    </form>
+  </div>
+
+  <a href="/" class="btn-back">Вернуться к рецептам</a>
+</div>
+
+
+
+
+
+
+
+
+ 

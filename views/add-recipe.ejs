@@ -1,0 +1,44 @@
+<h1>Добавить рецепт</h1>
+<form action="/add-recipe" method="POST" enctype="multipart/form-data">
+    <input type="text" name="title" placeholder="Название рецепта" required>
+    <textarea name="description" placeholder="Описание приготовления" required></textarea>
+
+    <div id="ingredients-section">
+      <label for="ingredients">Ингредиенты и их вес (в граммах):</label>
+      <div class="ingredient-field">
+        <input type="text" name="ingredients[]" placeholder="Ингредиент" required>
+        <input type="number" step="0.001" name="ingredientWeights[]" placeholder="Вес в граммах" required>
+        <button type="button" class="remove-ingredient">Удалить</button> <!-- Кнопка удаления -->
+      </div>
+    </div>
+
+    <button type="button" id="add-ingredient">Добавить ингредиент</button>
+
+    <div>
+      <label for="total-weight">Общий вес ингредиентов (в граммах):</label>
+      <input type="number" id="total-weight" name="totalWeight" step="0.001" readonly>
+    </div>
+
+    <div>
+      <label for="category">Категория:</label>
+      <select name="category" id="category" required>
+        <option value="fish">Рыбные блюда</option>
+        <option value="meat">Мясные блюда</option>
+        <option value="sauce">Соусы</option>
+      </select>
+    </div>
+
+    <div class="file-upload">
+      <label for="photo" class="custom-file-upload">Выбрать файл</label>
+      <input type="file" id="photo" name="photo" accept="image/*">
+    </div>
+    
+    <button type="submit">Сохранить рецепт</button>
+</form>
+
+
+
+
+  
+  
+

@@ -1,0 +1,27 @@
+<h1>Редактировать рецепт</h1>
+<form action="/edit-recipe/<%= recipe.id %>" method="POST" enctype="multipart/form-data">
+    <input type="text" name="title" value="<%= recipe.title %>" placeholder="Название рецепта" required>
+    <textarea name="description" placeholder="Описание приготовления" required><%= recipe.preparation %></textarea>
+
+    <div id="ingredients-section">
+      <label for="ingredients">Ингредиенты и их вес (в граммах):</label>
+      <% recipe.ingredients.forEach((ingredient, i) => { %>
+        <div class="ingredient-field">
+          <input type="text" name="ingredients[]" value="<%= ingredient %>" placeholder="Ингредиент" required>
+          <input type="number" step="0.001" name="ingredientWeights[]" value="<%= recipe.ingredientWeights[i] %>" placeholder="Вес в граммах" required>
+        </div>
+      <% }); %>
+    </div>
+
+    <button type="button" id="add-ingredient">Добавить ингредиент</button>
+
+    <div>
+      <label for="total-weight">Общий вес ингредиентов (в граммах):</label>
+      <input type="number" id="total-weight" name="totalWeight" value="<%= recipe.totalWeight %>" step="0.001" readonly>
+    </div>
+
+    <input type="file" name="photo" accept="image/*">
+    <button type="submit">Сохранить изменения</button>
+</form>
+
+

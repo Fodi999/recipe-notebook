@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/styles/main.css">
+  <script src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js" type="module"></script>
+  <!-- Для старых браузеров -->
+  <script src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js" nomodule></script>
+  <title>Навигация без перезагрузки</title>
+</head>
+<body>
+  <%- include('nav') %> <!-- Навигация -->
+
+  <div id="content">
+    <%- include(body) %> <!-- Включаем динамический контент -->
+  </div>
+  
+  <script src="/scripts/app.js"></script>
+</body>
+</html>
+
+

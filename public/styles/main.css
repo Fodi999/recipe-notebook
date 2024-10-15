@@ -1,0 +1,73 @@
+body { background-color: #1c1c1e; color: #fff; font-family: Arial, sans-serif; padding-bottom: 150px; }
+h1 { color: #fff; font-size: 24px; font-weight: bold; margin-bottom: 20px; }
+a { color: #0a84ff; text-decoration: none; } 
+a:hover { text-decoration: underline; }
+.icon-wrapper { width: 50px; height: 50px; display: flex; justify-content: center; align-items: center; border-radius: 50%; background: red; transition: all 0.3s ease; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); position: relative; color: white; font-size: 24px; cursor: pointer; } 
+.icon-wrapper:hover { background: #ff4a4a; }
+.icon-wrapper.active { transform: translateY(-15px); box-shadow: 0 10px 20px rgba(255, 0, 153, 0.3); }
+.icon-text { font-size: 12px; color: #fff; position: absolute; bottom: -25px; opacity: 0; transition: opacity 0.3s ease; } 
+.icon-wrapper.active .icon-text { opacity: 1; }
+.bottom-nav { position: fixed; bottom: 20px; left: 20px; right: 20px; background: rgba(255, 255, 255, 0.6); box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); border-radius: 20px; padding: 10px; z-index: 1100; }
+.bottom-nav ul { display: flex; justify-content: space-around; padding: 0; margin: 0; }
+.bottom-nav li { list-style: none; }
+.nav-link { display: flex; flex-direction: column; align-items: center; text-decoration: none; color: #000; }
+.nav-link:hover { color: #ff0099; }
+.header { background-color: #1c1c1e; padding: 10px; text-align: center; margin-bottom: 0; margin-top: 5px; border: 2px solid #fff; border-radius: 8px; display: flex; align-items: center; justify-content: space-between; }
+.header .logo { height: 50px; margin-right: 10px; }
+.title-container { display: flex; flex-direction: column; align-items: center; }
+.header .section-title { font-size: 24px; font-weight: bold; color: #d3d3d3; display: flex; align-items: center; justify-content: center; }
+.header .section-title i { margin-right: 10px; color: #0a84ff; font-size: 24px; }
+.subtitle { font-size: 16px; font-weight: normal; color: #d3d3d3; margin-top: 5px; }
+.section-header { margin: 20px 0; padding: 10px; background-color: transparent; border: 2px solid white; border-radius: 15px; text-align: center; display: flex; justify-content: center; align-items: center; }
+.section-header .section-title { font-size: 1.5em; font-weight: bold; color: white; margin: 0; }
+.card { background-color: #2c2c2e; border-radius: 12px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5); width: 300px; margin: 10px; padding: 15px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; border: 2px solid transparent; transition: border-color 0.3s ease; margin-right: 15px; flex: 0 0 auto; }
+
+.card:hover { border-color: #fff; }
+.card img { width: 100%; height: 200px; border-radius: 10px; object-fit: cover; margin-bottom: 15px; }
+.card-content { display: flex; justify-content: space-between; align-items: center; width: 100%; }
+.card-title { font-size: 18px; font-weight: bold; margin: 0 0 8px 0; color: #fff; }
+.card-description { font-size: 14px; color: #d1d1d6; margin: 0 0 8px 0; }
+.card-price { color: #0a84ff; font-size: 16px; font-weight: bold; }
+.card-button { background-color: #0a84ff; color: white; font-size: 16px; font-weight: bold; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; transition: background-color 0.3s ease; }
+.card-button:hover { background-color: #006bbf; }
+.scroll-horizontal { display: flex; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 20px; scroll-behavior: smooth; }
+.scroll-horizontal::-webkit-scrollbar { height: 8px; }
+.scroll-horizontal::-webkit-scrollbar-thumb { background-color: rgba(255, 255, 255, 0.5); border-radius: 10px; }
+h1 { font-size: 28px; font-weight: bold; color: #fff; text-align: center; margin-bottom: 20px; }
+form { background-color: #2c2c2e; padding: 20px; border-radius: 10px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5); width: 100%; max-width: 600px; margin: 0 auto; }
+input[type="text"], textarea, select, input[type="number"] { width: calc(100% - 40px); padding: 10px; margin: 10px; border: 1px solid #3a3a3c; border-radius: 8px; background-color: #1c1c1e; color: #fff; font-size: 16px; box-sizing: border-box; }
+input[type="text"]::placeholder, textarea::placeholder { color: #d1d1d6; }
+textarea { resize: vertical; min-height: 100px; }
+#ingredients-section { margin-bottom: 15px; }
+.ingredient-field { display: flex; gap: 10px; margin-bottom: 10px; }
+input[type="file"] { margin-top: 15px; }
+button[type="button"], button[type="submit"] { background-color: #0a84ff; color: white; font-size: 16px; font-weight: bold; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; transition: background-color 0.3s ease; width: calc(100% - 40px); margin: 10px; box-sizing: border-box; }
+button[type="button"]:hover, button[type="submit"]:hover { background-color: #006bbf; }
+input[readonly] { background-color: #1c1c1e; color: #d1d1d6; }
+label { color: #d1d1d6; margin-bottom: 8px; display: block; font-size: 14px; margin-left: 10px; }
+.file-upload { position: relative; display: inline-block; width: calc(100% - 40px); margin: 10px; }
+.custom-file-upload { background-color: red; color: white; font-size: 16px; font-weight: bold; padding: 10px 20px; border-radius: 8px; cursor: pointer; display: inline-block; text-align: center; width: 100%; box-sizing: border-box; }
+input[type="file"] { display: none; } /* Скрываем стандартный элемент input[type="file"] */
+.custom-file-upload:hover { background-color: #ff4a4a; } /* Изменение цвета при наведении */
+.recipe-detail { background-color: #2c2c2e; padding: 20px; border-radius: 10px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5); width: 100%; max-width: 800px; margin: 0 auto; color: #fff; }
+.recipe-detail h1 { font-size: 28px; font-weight: bold; margin-bottom: 20px; text-align: center; }
+.recipe-detail h2 { font-size: 20px; font-weight: bold; margin-bottom: 10px; color: #d3d3d3; }
+.recipe-detail img.recipe-photo { width: 100%; height: auto; border-radius: 10px; margin-bottom: 20px; }
+.recipe-detail ul { list-style: none; padding-left: 0; margin-bottom: 20px; }
+.recipe-detail ul li { font-size: 16px; margin-bottom: 8px; }
+.recipe-detail p { font-size: 16px; line-height: 1.5; margin-bottom: 20px; }
+.recipe-actions { display: flex; justify-content: space-between; margin-bottom: 20px; }
+.recipe-actions a.btn-edit, .recipe-actions .btn-delete { background-color: #0a84ff; color: white; font-size: 16px; font-weight: bold; padding: 10px 20px; border: none; border-radius: 8px; text-decoration: none; display: inline-block; cursor: pointer; transition: background-color 0.3s ease; }
+.recipe-actions a.btn-edit:hover, .recipe-actions .btn-delete:hover { background-color: #006bbf; }
+.btn-back { display: inline-block; background-color: #ff4a4a; color: white; padding: 10px 20px; border-radius: 8px; font-size: 16px; font-weight: bold; text-decoration: none; transition: background-color 0.3s ease; }
+.btn-back:hover { background-color: #ff0000; }
+
+
+
+
+
+
+
+
+
+ 
